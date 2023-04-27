@@ -1,6 +1,7 @@
 import requests as rq
 import json
 import functions.params as par
+import time
 
 base_url = "https://steamcommunity.com/market/search/render/?q="
 
@@ -48,7 +49,14 @@ def test():
 def get_data(url):
     result = []
     res = rq.get(url)
+    print(res)
+    if res.status_code == 429:
+        print("steam gave up lol")
+        time.sleep(10)
+        print("hope")
     response = json.loads(res.text)
+    if response["total_count"] == 0:
+        return False
     for a in response['results']:
         result.append([a["name"], int(a["sell_price"]) / 100])
 
